@@ -1,4 +1,5 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-else-return */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable eol-last */
@@ -70,7 +71,25 @@ const addBookHandler = (request, h) => {
 };
 
 const getAllBooksHandler = (request, h) => {
-    const simplifiedBooks = books.map((book) => ({
+    let filteredBooks = [...books];
+
+    const { name } = request.query;
+    if (name) {
+        filteredBooks = filteredBooks.filter((book) =>
+            book.name.toLowerCase().includes(name.toLowerCase()));
+    }
+
+    const { reading } = request.query;
+    if (reading !== undefined) {
+        filteredBooks = filteredBooks.filter((book) => book.reading === (reading === '1'));
+    }
+
+    const { finished } = request.query;
+    if (finished !== undefined) {
+        filteredBooks = filteredBooks.filter((book) => book.finished === (finished === '1'));
+    }
+
+    const simplifiedBooks = filteredBooks.map((book) => ({
         id: book.id,
         name: book.name,
         publisher: book.publisher,
